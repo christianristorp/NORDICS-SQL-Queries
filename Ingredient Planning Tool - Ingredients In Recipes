@@ -1,0 +1,16 @@
+select distinct
+                split_part(r.unique_recipe_code,'-',1) as split_code
+              , sku.code
+              , sku.display_name
+              , v.status
+from materialized_views.remps_recipe r
+        left join materialized_views.remps_recipe_ingredientgroup ig
+              on r.id = ig.ingredient_group__recipe
+         join materialized_views.remps_recipe_recipeskus rs
+              on ig.id = rs.recipe_sku__ingredient_group
+         join materialized_views.remps_sku_sku sku
+              on sku.id = rs.recipe_sku__sku
+         join materialized_views.int_scm_analytics_remps_recipe v
+              on CAST(r.id AS VARCHAR) = CAST(v.id AS VARCHAR)
+    where r.remps_instance = 'DKSE'
+    order by split_code
