@@ -1,0 +1,21 @@
+-- Ratings--
+SELECT
+country,
+customer_id,
+hellofresh_week,
+COUNT (*) AS number_of_ratings
+FROM materialized_views.recipe_rating_corrected
+WHERE country = 'SE' -- edit country
+AND hellofresh_week BETWEEN '2022-W01' AND '2022-W04' -- edit weeks
+GROUP BY
+country,
+customer_id,
+hellofresh_week
+ORDER BY hellofresh_week ASC
+
+
+-- Winner--
+SELECT *
+FROM dimensions.customer_dimension
+WHERE country = 'SE' -- edit country
+AND customer_id =  -- insert winner
