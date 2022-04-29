@@ -1,0 +1,27 @@
+SELECT
+    dd.hellofresh_quarter AS hf_quarter,
+    recipe_number,
+    box_size,
+    sentiment,
+    attribute,
+    category,
+    COUNT(rating_id) AS nb_comments
+FROM
+    materialized_views.recipe_comments rc
+LEFT JOIN ( SELECT DISTINCT
+            hellofresh_week,
+            hellofresh_month_label AS hellofresh_month,
+            hellofresh_quarter_label AS hellofresh_quarter
+            FROM
+            views_analysts.date_dimension_helper ) dd
+    ON dd.hellofresh_week = rc.hellofresh_week
+WHERE
+    rc.country in ('SE', 'DK')
+    AND dd.hellofresh_quarter = '2022-Q1'
+    AND sentiment = 'Negative'
+    AND category = 'Guidelines'
+    AND translated_comment LIKE '%water%'
+GROUP BY
+    1, 2, 3, 4, 5, 6
+Order by
+    1, 2, 3
